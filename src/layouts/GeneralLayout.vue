@@ -1,3 +1,4 @@
+//C:\Web-dev\Developer-Foundry\get-change\src\layouts\GeneralLayout.vue
 <template>
 	<div class="min-h-screen bg-gray-50 text-gray-900">
 		<AppHeader />

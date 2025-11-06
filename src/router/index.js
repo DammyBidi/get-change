@@ -33,6 +33,7 @@ const router = createRouter({
     {
       path: '/',
       component: GeneralLayout,
+      meta: { requiresAuth: true },
       children: [
         { path: 'dashboard', name: 'dashboard', component: DashboardHome },
         { path: 'employees', name: 'employees', component: EmployeesView },
@@ -42,6 +43,20 @@ const router = createRouter({
     // Fallback: redirect unknown routes to root
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
+})
+
+// Global auth guard
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'
+
+  if (to.matched.some((record) => record.meta && record.meta.requiresAuth)) {
+    if (!isAuthenticated) {
+      // redirect to login with redirect back to the original target after login
+      return next({ name: 'login', query: { redirect: to.fullPath } })
+    }
+  }
+
+  next()
 })
 
 export default router

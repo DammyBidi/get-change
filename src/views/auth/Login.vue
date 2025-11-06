@@ -72,8 +72,15 @@ export default {
   methods: {
     signIn() {
       // Placeholder sign-in action; replace with real auth later
-      // For now, just navigate to complete page to simulate success
-      this.$router.push("/complete");
+      // Persist simple auth flag and redirect
+      try {
+        localStorage.setItem('isAuthenticated', 'true');
+      } catch (e) {
+        // If localStorage unavailable, proceed without persisting
+      }
+
+      const redirect = this.$route.query.redirect || '/dashboard';
+      this.$router.push(redirect);
     },
   },
 };
