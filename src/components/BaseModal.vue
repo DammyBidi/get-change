@@ -56,88 +56,97 @@
   </Teleport>
 </template>
 
-<script setup>
-import { onMounted, onBeforeUnmount, ref, watch, computed, useSlots } from 'vue'
+<script>
+import { ref, computed } from 'vue'
 
-const props = defineProps({
-  modelValue: { type: Boolean, default: false },
-  title: { type: String, default: '' },
-  size: { type: String, default: 'md' }, // sm, md, lg, xl, 2xl
-  closeOnBackdrop: { type: Boolean, default: true },
-  closeOnEsc: { type: Boolean, default: true },
-  restoreFocus: { type: Boolean, default: true },
-})
-
-const emit = defineEmits(['update:modelValue', 'open', 'close'])
-
-const panel = ref(null)
-const lastFocused = ref(null)
-const titleId = `modal-title-${Math.random().toString(36).slice(2)}`
-
-const hasHeaderSlot = computed(() => !!useSlots().header)
-const hasFooterSlot = computed(() => !!useSlots().footer)
-const sizeClass = computed(() => {
-  switch (props.size) {
-    case 'sm': return 'max-w-sm'
-    case 'lg': return 'max-w-lg'
-    case 'xl': return 'max-w-xl'
-    case '2xl': return 'max-w-2xl'
-    default: return 'max-w-md'
+export default {
+  name: 'BaseModal',
+  props: {
+    modelValue: { type: Boolean, default: false },
+    title: { type: String, default: '' },
+    size: { type: String, default: 'md' }, // sm, md, lg, xl, 2xl
+    closeOnBackdrop: { type: Boolean, default: true },
+    closeOnEsc: { type: Boolean, default: true },
+    restoreFocus: { type: Boolean, default: true },
+  },
+  emits: ['update:modelValue', 'open', 'close'],
+  data() {
+    return {
+      panel: null,
+      lastFocused: null,
+      titleId: `modal-title-${Math.random().toString(36).slice(2)}`,
+    }
+  },
+  computed: {
+    hasHeaderSlot() {
+      return !!this.$slots.header
+    },
+    hasFooterSlot() {
+      return !!this.$slots.footer
+    },
+    sizeClass() {
+      switch (this.size) {
+        case 'sm': return 'max-w-sm'
+        case 'lg': return 'max-w-lg'
+        case 'xl': return 'max-w-xl'
+        case '2xl': return 'max-w-2xl'
+        default: return 'max-w-md'
+      }
+    }
+  },
+  watch: {
+    modelValue(val) {
+      if (val) {
+        this.open()
+      } else {
+        this.releaseFocus()
+      }
+    }
+  },
+  mounted() {
+    if (this.modelValue) this.open()
+  },
+  beforeUnmount() {
+    this.releaseFocus()
+  },
+  methods: {
+    open() {
+      this.$emit('open')
+      this.trapFocus()
+    },
+    close(reason = 'programmatic') {
+      this.$emit('update:modelValue', false)
+      this.$emit('close', reason)
+      this.releaseFocus()
+    },
+    handleEsc() {
+      if (this.closeOnEsc) this.close('escape')
+    },
+    onBackdropClick() {
+      if (this.closeOnBackdrop) this.close('backdrop')
+    },
+    trapFocus() {
+      if (!this.panel) return
+      this.lastFocused = document.activeElement
+      const focusable = this.panel.querySelector(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      ;(focusable || this.panel).focus({ preventScroll: true })
+      document.addEventListener('focus', this.enforceFocus, true)
+    },
+    releaseFocus() {
+      document.removeEventListener('focus', this.enforceFocus, true)
+      if (this.restoreFocus && this.lastFocused instanceof HTMLElement) {
+        this.lastFocused.focus({ preventScroll: true })
+      }
+    },
+    enforceFocus(e) {
+      if (!this.panel || this.panel.contains(e.target)) return
+      e.stopPropagation()
+      this.panel.focus({ preventScroll: true })
+    }
   }
-})
-
-function open() {
-  emit('open')
-  trapFocus()
 }
-function close(reason = 'programmatic') {
-  emit('update:modelValue', false)
-  emit('close', reason)
-  releaseFocus()
-}
-function handleEsc() {
-  if (props.closeOnEsc) close('escape')
-}
-function onBackdropClick() {
-  if (props.closeOnBackdrop) close('backdrop')
-}
-
-// Focus management
-function trapFocus() {
-  if (!panel.value) return
-  lastFocused.value = document.activeElement
-  // Focus first focusable element or panel
-  const focusable = panel.value.querySelector(
-    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-  )
-  ;(focusable || panel.value).focus({ preventScroll: true })
-  document.addEventListener('focus', enforceFocus, true)
-}
-function releaseFocus() {
-  document.removeEventListener('focus', enforceFocus, true)
-  if (props.restoreFocus && lastFocused.value instanceof HTMLElement) {
-    lastFocused.value.focus({ preventScroll: true })
-  }
-}
-function enforceFocus(e) {
-  if (!panel.value || panel.value.contains(e.target)) return
-  e.stopPropagation()
-  panel.value.focus({ preventScroll: true })
-}
-
-watch(() => props.modelValue, (val) => {
-  if (val) {
-    open()
-  } else {
-    releaseFocus()
-  }
-})
-
-onMounted(() => {
-  if (props.modelValue) open()
-})
-
-onBeforeUnmount(() => releaseFocus())
 </script>
 
 <style scoped>

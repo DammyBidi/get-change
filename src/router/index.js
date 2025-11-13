@@ -13,6 +13,8 @@ import ForgotPassword from '@/views/auth/ForgotPassword.vue'
 import DashboardHome from '@/views/dashboard/Home.vue'
 import EmployeesView from '@/views/employees/Employees.vue'
 import CardsView from '@/views/cards/Cards.vue'
+import SettingsView from '@/views/dashboard/Settings.vue'
+import WalletView from '@/views/dashboard/Wallet.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +40,8 @@ const router = createRouter({
         { path: 'dashboard', name: 'dashboard', component: DashboardHome },
         { path: 'employees', name: 'employees', component: EmployeesView },
         { path: 'cards', name: 'cards', component: CardsView },
+        { path: 'settings', name: 'settings', component: SettingsView },
+        { path: 'wallet', name: 'wallet', component: WalletView },
       ],
     },
     // Fallback: redirect unknown routes to root

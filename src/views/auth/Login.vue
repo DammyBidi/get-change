@@ -71,12 +71,13 @@ export default {
   },
   methods: {
     signIn() {
-      // Placeholder sign-in action; replace with real auth later
+     
       // Persist simple auth flag and redirect
       try {
         localStorage.setItem('isAuthenticated', 'true');
+        
       } catch (e) {
-        // If localStorage unavailable, proceed without persisting
+        
       }
 
       const redirect = this.$route.query.redirect || '/dashboard';
