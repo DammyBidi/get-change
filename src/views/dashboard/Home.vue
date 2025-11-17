@@ -161,6 +161,7 @@
         </button>
         <button
           class="bg-green-500 hover:bg-green-600 text-white py-2 rounded-md font-medium"
+          @click="openIouModal"
         >
           Generate
         </button>
@@ -267,7 +268,6 @@
       </template>
     </BaseModal>
 
-
     <!-- Query Modal -->
     <BaseModal
       v-model="showQuery"
@@ -337,6 +337,80 @@
         </div>
       </div>
     </BaseModal>
+    <!-- IOU Code Validation Modal -->
+    <BaseModal
+      v-model="showIouValidate"
+      title="Validate IOU Voucher"
+      size="xl"
+      @close="() => (showIouValidate = false)"
+    >
+      <div class="p-10">
+        <p class="text-3xl text-[#013C61] text-center font-bold mb-4">
+          Kindly enter customer unique IOU code to validate their voucher
+        </p>
+        <div class="flex gap-3 justify-center mb-4">
+          <input
+            v-for="(part, i) in codeParts"
+            :key="i"
+            :ref="'code' + i"
+            v-model="codeParts[i]"
+            @input="handleCodeInput(i, $event)"
+            @keydown.backspace="handleBackspace(i, $event)"
+            maxlength="1"
+            class="w-12 h-12 text-center border border-gray-300 rounded-md text-xl uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-green-500"
+            type="text"
+            autocomplete="off"
+          />
+        </div>
+        <p v-if="iouError" class="text-red-600 text-sm mb-4">{{ iouError }}</p>
+        <div class="flex justify-center gap-4">
+          <button
+            class="px-4 py-2 rounded-md bg-green-500 text-white text-sm font-medium hover:bg-green-600"
+            @click="validateIou"
+          >
+            Validate
+          </button>
+          <button
+            class="px-4 py-2 rounded-md bg-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-300"
+            @click="showIouValidate = false"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </BaseModal>
+    <!-- IOU Success Modal -->
+    <BaseModal
+      v-model="showIouSuccess"
+      title="Success"
+      size="sm"
+      @close="() => (showIouSuccess = false)"
+    >
+      <div class="p-1 text-center">
+        <p class="text-base font-semibold text-[#0B3C5D] mb-1">
+          IOU Voucher redeemed successfully
+        </p>
+        <p class="text-sm text-gray-600 mb-5">
+          The voucher has been validated and marked as redeemed.
+        </p>
+        <div
+          class="mx-auto mb-4 flex items-center justify-center h-16 w-16 rounded-full bg-green-100"
+        >
+          <svg
+            class="h-10 w-10 text-green-600"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M20 6L9 17l-5-5" />
+          </svg>
+        </div>
+      </div>
+    </BaseModal>
   </div>
 </template>
 
@@ -399,6 +473,10 @@ export default {
       showHistory: false,
       showQuery: false,
       queryTerm: "",
+      showIouValidate: false,
+      codeParts: ["", "", "", "", ""],
+      iouError: "",
+      showIouSuccess: false,
     };
   },
   methods: {
@@ -412,6 +490,53 @@ export default {
       // For now just close the modal
       this.showQuery = false;
     },
+    openIouModal() {
+      this.resetIou();
+      this.showIouValidate = true;
+      this.$nextTick(() => {
+        const first = this.$refs.code0;
+        if (first) first.focus();
+      });
+    },
+    resetIou() {
+      this.codeParts = ["", "", "", "", ""];
+      this.iouError = "";
+    },
+    handleCodeInput(index, evt) {
+      let val = evt.target.value
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "")
+        .slice(0, 1);
+      this.codeParts[index] = val;
+      if (val && index < 4) {
+        const next = this.$refs[`code${index + 1}`];
+        if (next) next.focus();
+      }
+    },
+    handleBackspace(index) {
+      if (!this.codeParts[index] && index > 0) {
+        const prev = this.$refs[`code${index - 1}`];
+        if (prev) prev.focus();
+      }
+    },
+    validateIou() {
+      const code = this.codeParts.join("");
+      if (code.length !== 5) {
+        this.iouError = "Enter complete 5-character IOU code";
+        return;
+      }
+      // Placeholder validation logic; replace with real API check
+      const mockValid = "ABCDE"; // example expected code
+      if (code !== mockValid) {
+        this.iouError =
+          "Error: code not associated with customer’s phone number";
+      } else {
+        this.iouError = "";
+        this.showIouValidate = false;
+        this.showIouSuccess = true;
+        this.resetIou();
+      }
+    },
   },
 };
 </script>
@@ -423,4 +548,3 @@ table td {
   padding-right: 0.75rem;
 }
 </style>
- 

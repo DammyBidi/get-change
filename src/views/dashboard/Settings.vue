@@ -386,232 +386,224 @@
   </div>
 </template>
 
-<script setup>
-import { ref, computed } from "vue";
+<script>
+export default {
+  name: "Settings",
+  data() {
+    return {
+      tabs: [
+        "Profile",
+        "Password",
+        "Store Information",
+        "Billing Information",
+        "Invoice History",
+      ],
+      activeTab: "Profile",
+      form: {
+        firstName: "Joshua",
+        lastName: "Bakare",
+        email: "josh.bakery@gmail.com",
+      },
+      saved: false,
 
-const tabs = [
-  "Profile",
-  "Password",
-  "Store Information",
-  "Billing Information",
-  "Invoice History",
-];
+      // Password tab state
+      passwordForm: {
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      },
+      passwordErrors: {
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      },
+      passwordSaved: false,
+      passwordLoading: false,
 
-const activeTab = ref("Profile");
+      // Store Information state
+      storeForm: {
+        businessName: "",
+        businessAddress: "",
+        phoneNumber: "",
+      },
+      storeErrors: {
+        businessName: "",
+        businessAddress: "",
+        phoneNumber: "",
+      },
+      storeSaved: false,
+      storeLoading: false,
 
-const form = ref({
-  firstName: "Joshua",
-  lastName: "Bakare",
-  email: "josh.bakery@gmail.com",
-});
+      // Billing Information
+      billingForm: {
+        primaryCard: "mastercard",
+        recurring: "enable",
+      },
+      billingSaved: false,
 
-const saved = ref(false);
-
-// Password tab state
-const passwordForm = ref({
-  oldPassword: "",
-  newPassword: "",
-  confirmPassword: "",
-});
-
-const passwordErrors = ref({
-  oldPassword: "",
-  newPassword: "",
-  confirmPassword: "",
-});
-
-const passwordSaved = ref(false);
-const passwordLoading = ref(false);
-
-function saveChanges() {
-  saved.value = true;
-  setTimeout(() => (saved.value = false), 2000);
-}
-
-function handleFileUpload(event) {
-  const file = event.target.files[0];
-  if (file) {
-    console.log("Uploaded file:", file.name);
-  }
-}
-
-function updatePassword() {
-  // reset state
-  passwordSaved.value = false;
-  passwordErrors.value = {
-    oldPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  };
-
-  // validations
-  if (!passwordForm.value.oldPassword) {
-    passwordErrors.value.oldPassword = "Old password is required.";
-  }
-  if (!passwordForm.value.newPassword) {
-    passwordErrors.value.newPassword = "New password is required.";
-  } else if (passwordForm.value.newPassword.length < 8) {
-    passwordErrors.value.newPassword =
-      "Password must be at least 8 characters.";
-  }
-  if (!passwordForm.value.confirmPassword) {
-    passwordErrors.value.confirmPassword = "Please confirm your new password.";
-  } else if (
-    passwordForm.value.newPassword !== passwordForm.value.confirmPassword
-  ) {
-    passwordErrors.value.confirmPassword = "Passwords do not match.";
-  }
-
-  // if any error present, stop
-  const hasError = Object.values(passwordErrors.value).some(Boolean);
-  if (hasError) return;
-
-  // simulate async update
-  passwordLoading.value = true;
-  setTimeout(() => {
-    passwordLoading.value = false;
-    passwordSaved.value = true;
-    // clear form values
-    passwordForm.value.oldPassword = "";
-    passwordForm.value.newPassword = "";
-    passwordForm.value.confirmPassword = "";
-    setTimeout(() => (passwordSaved.value = false), 2000);
-  }, 800);
-}
-
-// Store Information state
-const storeForm = ref({
-  businessName: "",
-  businessAddress: "",
-  phoneNumber: "",
-});
-
-const storeErrors = ref({
-  businessName: "",
-  businessAddress: "",
-  phoneNumber: "",
-});
-
-const storeSaved = ref(false);
-const storeLoading = ref(false);
-
-function saveStoreInfo() {
-  storeSaved.value = false;
-  storeErrors.value = {
-    businessName: "",
-    businessAddress: "",
-    phoneNumber: "",
-  };
-
-  // validations
-  if (!storeForm.value.businessName) {
-    storeErrors.value.businessName = "Business name is required.";
-  }
-  if (!storeForm.value.businessAddress) {
-    storeErrors.value.businessAddress = "Business address is required.";
-  }
-  if (!storeForm.value.phoneNumber) {
-    storeErrors.value.phoneNumber = "Phone number is required.";
-  } else {
-    const digits = storeForm.value.phoneNumber.replace(/\D/g, "");
-    if (digits.length < 7) {
-      storeErrors.value.phoneNumber = "Enter a valid phone number.";
-    }
-  }
-
-  const hasError = Object.values(storeErrors.value).some(Boolean);
-  if (hasError) return;
-
-  // simulate async save
-  storeLoading.value = true;
-  setTimeout(() => {
-    storeLoading.value = false;
-    storeSaved.value = true;
-    setTimeout(() => (storeSaved.value = false), 2000);
-  }, 800);
-}
-
-const billingForm = ref({
-  primaryCard: "mastercard",
-  recurring: "enable",
-});
-
-const billingSaved = ref(false);
-
-function saveBillingInfo() {
-  billingSaved.value = true;
-  setTimeout(() => (billingSaved.value = false), 2000);
-}
-
-// Invoice History pagination
-
-const invoices = ref([
-  {
-    id: 1,
-    description: "Wallet top up",
-    date: "06 Aug, 2019",
-    amount: "NGN2000.00",
+      // Invoice History pagination
+      invoices: [
+        {
+          id: 1,
+          description: "Wallet top up",
+          date: "06 Aug, 2019",
+          amount: "NGN2000.00",
+        },
+        {
+          id: 2,
+          description: "Wallet top up",
+          date: "04 Jul, 2019",
+          amount: "NGN2000.00",
+        },
+        {
+          id: 3,
+          description: "Wallet top up",
+          date: "06 Jun, 2019",
+          amount: "NGN2000.00",
+        },
+        {
+          id: 4,
+          description: "Wallet top up",
+          date: "02 May, 2019",
+          amount: "NGN2000.00",
+        },
+        {
+          id: 5,
+          description: "Wallet top up",
+          date: "06 Apr, 2019",
+          amount: "NGN2000.00",
+        },
+        {
+          id: 6,
+          description: "Wallet top up",
+          date: "06 Mar, 2019",
+          amount: "NGN2000.00",
+        },
+        {
+          id: 7,
+          description: "Wallet top up",
+          date: "12 Feb, 2019",
+          amount: "NGN2000.00",
+        },
+        {
+          id: 8,
+          description: "Wallet top up",
+          date: "10 Jan, 2019",
+          amount: "NGN2000.00",
+        },
+      ],
+      currentPage: 1,
+      itemsPerPage: 7,
+    };
   },
-  {
-    id: 2,
-    description: "Wallet top up",
-    date: "04 Jul, 2019",
-    amount: "NGN2000.00",
+  computed: {
+    totalPages() {
+      return Math.ceil(this.invoices.length / this.itemsPerPage);
+    },
+    paginatedInvoices() {
+      const start = (this.currentPage - 1) * this.itemsPerPage;
+      return this.invoices.slice(start, start + this.itemsPerPage);
+    },
   },
-  {
-    id: 3,
-    description: "Wallet top up",
-    date: "06 Jun, 2019",
-    amount: "NGN2000.00",
-  },
-  {
-    id: 4,
-    description: "Wallet top up",
-    date: "02 May, 2019",
-    amount: "NGN2000.00",
-  },
-  {
-    id: 5,
-    description: "Wallet top up",
-    date: "06 Apr, 2019",
-    amount: "NGN2000.00",
-  },
-  {
-    id: 6,
-    description: "Wallet top up",
-    date: "06 Mar, 2019",
-    amount: "NGN2000.00",
-  },
-  {
-    id: 7,
-    description: "Wallet top up",
-    date: "12 Feb, 2019",
-    amount: "NGN2000.00",
-  },
-  {
-    id: 8,
-    description: "Wallet top up",
-    date: "10 Jan, 2019",
-    amount: "NGN2000.00",
-  },
-]);
+  methods: {
+    saveChanges() {
+      this.saved = true;
+      setTimeout(() => (this.saved = false), 2000);
+    },
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        console.log("Uploaded file:", file.name);
+      }
+    },
+    updatePassword() {
+      // reset state
+      this.passwordSaved = false;
+      this.passwordErrors = {
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      };
 
-const currentPage = ref(1);
-const itemsPerPage = 7;
-const totalPages = computed(() =>
-  Math.ceil(invoices.value.length / itemsPerPage)
-);
+      // validations
+      if (!this.passwordForm.oldPassword) {
+        this.passwordErrors.oldPassword = "Old password is required.";
+      }
+      if (!this.passwordForm.newPassword) {
+        this.passwordErrors.newPassword = "New password is required.";
+      } else if (this.passwordForm.newPassword.length < 8) {
+        this.passwordErrors.newPassword =
+          "Password must be at least 8 characters.";
+      }
+      if (!this.passwordForm.confirmPassword) {
+        this.passwordErrors.confirmPassword = "Please confirm your new password.";
+      } else if (
+        this.passwordForm.newPassword !== this.passwordForm.confirmPassword
+      ) {
+        this.passwordErrors.confirmPassword = "Passwords do not match.";
+      }
 
-const paginatedInvoices = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  return invoices.value.slice(start, start + itemsPerPage);
-});
+      // if any error present, stop
+      const hasError = Object.values(this.passwordErrors).some(Boolean);
+      if (hasError) return;
 
-function nextPage() {
-  if (currentPage.value < totalPages.value) currentPage.value++;
-}
+      // simulate async update
+      this.passwordLoading = true;
+      setTimeout(() => {
+        this.passwordLoading = false;
+        this.passwordSaved = true;
+        // clear form values
+        this.passwordForm.oldPassword = "";
+        this.passwordForm.newPassword = "";
+        this.passwordForm.confirmPassword = "";
+        setTimeout(() => (this.passwordSaved = false), 2000);
+      }, 800);
+    },
+    saveStoreInfo() {
+      this.storeSaved = false;
+      this.storeErrors = {
+        businessName: "",
+        businessAddress: "",
+        phoneNumber: "",
+      };
 
-function prevPage() {
-  if (currentPage.value > 1) currentPage.value--;
-}
+      // validations
+      if (!this.storeForm.businessName) {
+        this.storeErrors.businessName = "Business name is required.";
+      }
+      if (!this.storeForm.businessAddress) {
+        this.storeErrors.businessAddress = "Business address is required.";
+      }
+      if (!this.storeForm.phoneNumber) {
+        this.storeErrors.phoneNumber = "Phone number is required.";
+      } else {
+        const digits = this.storeForm.phoneNumber.replace(/\D/g, "");
+        if (digits.length < 7) {
+          this.storeErrors.phoneNumber = "Enter a valid phone number.";
+        }
+      }
+
+      const hasError = Object.values(this.storeErrors).some(Boolean);
+      if (hasError) return;
+
+      // simulate async save
+      this.storeLoading = true;
+      setTimeout(() => {
+        this.storeLoading = false;
+        this.storeSaved = true;
+        setTimeout(() => (this.storeSaved = false), 2000);
+      }, 800);
+    },
+    saveBillingInfo() {
+      this.billingSaved = true;
+      setTimeout(() => (this.billingSaved = false), 2000);
+    },
+    nextPage() {
+      if (this.currentPage < this.totalPages) this.currentPage++;
+    },
+    prevPage() {
+      if (this.currentPage > 1) this.currentPage--;
+    },
+  },
+};
 </script>

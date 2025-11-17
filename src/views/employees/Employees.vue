@@ -97,39 +97,49 @@
   </section>
 </template>
 
-<script setup>
-import { ref, computed } from 'vue'
-
-const searchQuery = ref('')
-const selectedRole = ref('')
-const selectAll = ref(false)
-
-const employees = ref([
-  { firstName: 'Joshua', lastName: 'Bakare', email: 'josh.bakery@gmail.com', phone: '+2348012345678', role: 'Admin', selected: false },
-  { firstName: 'Jane', lastName: 'Clement', email: 'josh.bakery@gmail.com', phone: '+2348012345678', role: 'Staff', selected: false },
-  { firstName: 'Hannah', lastName: 'Johnson', email: 'josh.bakery@gmail.com', phone: '+2348012345678', role: 'Staff', selected: false },
-  { firstName: 'John', lastName: 'Ngoka', email: 'josh.bakery@gmail.com', phone: '+2348012345678', role: 'Staff', selected: false },
-  { firstName: 'Omotayo', lastName: 'Adeleke', email: 'josh.bakery@gmail.com', phone: '+2348012345678', role: 'Staff', selected: false },
-  { firstName: 'Gloria', lastName: 'Amadi', email: 'josh.bakery@gmail.com', phone: '+2348012345678', role: 'Staff', selected: false }
-])
-
-const filteredEmployees = computed(() => {
-  if (!searchQuery.value) return employees.value
-  return employees.value.filter(emp =>
-    `${emp.firstName} ${emp.lastName}`.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
-})
-
-const toggleAll = () => {
-  employees.value.forEach(emp => (emp.selected = selectAll.value))
-}
-
-const changeRole = () => {
-  employees.value.forEach(emp => {
-    if (emp.selected && selectedRole.value) emp.role = selectedRole.value
-  })
-  selectedRole.value = ''
-  selectAll.value = false
+<script>
+export default {
+  name: 'Employees',
+  data() {
+    return {
+      searchQuery: '',
+      selectedRole: '',
+      selectAll: false,
+      employees: [
+        { firstName: 'Joshua', lastName: 'Bakare', email: 'josh.bakery@gmail.com', phone: '+2348012345678', role: 'Admin', selected: false },
+        { firstName: 'Jane', lastName: 'Clement', email: 'josh.bakery@gmail.com', phone: '+2348012345678', role: 'Staff', selected: false },
+        { firstName: 'Hannah', lastName: 'Johnson', email: 'josh.bakery@gmail.com', phone: '+2348012345678', role: 'Staff', selected: false },
+        { firstName: 'John', lastName: 'Ngoka', email: 'josh.bakery@gmail.com', phone: '+2348012345678', role: 'Staff', selected: false },
+        { firstName: 'Omotayo', lastName: 'Adeleke', email: 'josh.bakery@gmail.com', phone: '+2348012345678', role: 'Staff', selected: false },
+        { firstName: 'Gloria', lastName: 'Amadi', email: 'josh.bakery@gmail.com', phone: '+2348012345678', role: 'Staff', selected: false }
+      ],
+    }
+  },
+  computed: {
+    filteredEmployees() {
+      if (!this.searchQuery) return this.employees
+      const q = this.searchQuery.toLowerCase().trim()
+      return this.employees.filter(emp =>
+        `${emp.firstName} ${emp.lastName}`.toLowerCase().includes(q)
+      )
+    },
+  },
+  methods: {
+    toggleAll() {
+      this.employees.forEach(emp => {
+        emp.selected = this.selectAll
+      })
+    },
+    changeRole() {
+      this.employees.forEach(emp => {
+        if (emp.selected && this.selectedRole) {
+          emp.role = this.selectedRole
+        }
+      })
+      this.selectedRole = ''
+      this.selectAll = false
+    },
+  },
 }
 </script>
 

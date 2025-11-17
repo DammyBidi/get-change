@@ -10,9 +10,9 @@
 
           <!-- Pagination -->
       <div class="flex items-center text-sm text-gray-600 gap-2 self-end md:self-auto">
-        <span>1 of 2</span>
-        <button class="p-1 hover:text-blue-500">&lt;</button>
-        <button class="p-1 hover:text-blue-500">&gt;</button>
+        <span>{{ currentPage }} of {{ totalPages }}</span>
+        <button class="p-1 hover:text-blue-500" @click="prevPage">&lt;</button>
+        <button class="p-1 hover:text-blue-500" @click="nextPage">&gt;</button>
       </div>
       </div>
 
@@ -53,58 +53,52 @@
       </div>
     </div>
   </div>
-</template>
+ </template>
 
-<script setup lang="ts">
-import { ref, computed } from 'vue'
-
-type Tx = {
-  id: number
-  description: string
-  date: string
-  time: string
-  staff: string
-  amount: number
+<script>
+export default {
+  name: 'Wallet',
+  data() {
+    return {
+      transactions: [
+        { id: 1, description: 'Top for 081359491**', date: '06 Aug, 2019', time: '12:24PM', staff: 'Admin', amount: 300 },
+        { id: 2, description: 'Top for 081359491**', date: '06 Aug, 2019', time: '10:44AM', staff: 'Jane', amount: 55 },
+        { id: 3, description: 'Top for 080234578**', date: '06 Aug, 2019', time: '09:14AM', staff: 'Hannah', amount: 400 },
+        { id: 4, description: 'Top for 081359491**', date: '05 Aug, 2019', time: '01:30PM', staff: 'Admin', amount: 120 },
+        { id: 5, description: 'Top for 081359491**', date: '05 Aug, 2019', time: '11:24AM', staff: 'Admin', amount: 250 },
+        { id: 6, description: 'Top for 081359491**', date: '04 Aug, 2019', time: '12:45PM', staff: 'Jane', amount: 105 },
+        { id: 7, description: 'Top for 081359491**', date: '04 Aug, 2019', time: '12:45PM', staff: 'Jane', amount: 105 },
+        { id: 8, description: 'Top for 081359491**', date: '04 Aug, 2019', time: '12:45PM', staff: 'Jane', amount: 105 },
+      ],
+      currentPage: 1,
+      perPage: 6,
+    }
+  },
+  computed: {
+    totalPages() {
+      return Math.max(1, Math.ceil(this.transactions.length / this.perPage))
+    },
+    paginatedTransactions() {
+      const start = (this.currentPage - 1) * this.perPage
+      return this.transactions.slice(start, start + this.perPage)
+    },
+    gridColsClass() {
+      return 'grid grid-cols-6 md:grid-cols-6 lg:grid-cols-7 gap-4'
+    },
+  },
+  methods: {
+    nextPage() {
+      if (this.currentPage < this.totalPages) this.currentPage++
+    },
+    prevPage() {
+      if (this.currentPage > 1) this.currentPage--
+    },
+  },
 }
-
-const transactions = ref<Tx[]>([
-  { id: 1, description: 'Top for 081359491**', date: '06 Aug, 2019', time: '12:24PM', staff: 'Admin', amount: 300 },
-  { id: 2, description: 'Top for 081359491**', date: '06 Aug, 2019', time: '10:44AM', staff: 'Jane', amount: 55 },
-  { id: 3, description: 'Top for 080234578**', date: '06 Aug, 2019', time: '09:14AM', staff: 'Hannah', amount: 400 },
-  { id: 4, description: 'Top for 081359491**', date: '05 Aug, 2019', time: '01:30PM', staff: 'Admin', amount: 120 },
-  { id: 5, description: 'Top for 081359491**', date: '05 Aug, 2019', time: '11:24AM', staff: 'Admin', amount: 250 },
-  { id: 6, description: 'Top for 081359491**', date: '04 Aug, 2019', time: '12:45PM', staff: 'Jane', amount: 105 },
-  { id: 7, description: 'Top for 081359491**', date: '04 Aug, 2019', time: '12:45PM', staff: 'Jane', amount: 105 },
-  { id: 8, description: 'Top for 081359491**', date: '04 Aug, 2019', time: '12:45PM', staff: 'Jane', amount: 105 },
-])
-
-const currentPage = ref(1)
-const perPage = 6
-
-const totalPages = computed(() =>
-  Math.max(1, Math.ceil(transactions.value.length / perPage))
-)
-
-const paginatedTransactions = computed(() => {
-  const start = (currentPage.value - 1) * perPage
-  return transactions.value.slice(start, start + perPage)
-})
-
-function nextPage() {
-  if (currentPage.value < totalPages.value) currentPage.value++
-}
-
-function prevPage() {
-  if (currentPage.value > 1) currentPage.value--
-}
-
-const gridColsClass = computed(() => {
-  return 'grid grid-cols-6 md:grid-cols-6 lg:grid-cols-7 gap-4'
-})
 </script>
 
 <style scoped>
-/* Gives that clean space-between-cards appearance */
+
 .space-y-4 > * + * {
   margin-top: 1rem;
 }
