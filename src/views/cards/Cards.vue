@@ -5,6 +5,7 @@
       <h2 class="text-xl font-semibold text-gray-800">Debit Cards</h2>
       <button
         class="bg-green-500 text-white px-5 py-2 rounded-md hover:bg-green-600 transition"
+        @click="openAddCard"
       >
         Add New
       </button>
@@ -23,8 +24,11 @@
           <p class="text-gray-800 text-lg tracking-widest font-semibold">
             **** **** **** {{ card.last4 }}
           </p>
-          <button class="text-gray-400 hover:text-red-500 transition">
-            <i class="fas fa-trash"></i>
+          <button
+            class="text-gray-400 hover:text-red-500 transition"
+            @click="removeCard(index)"
+          >
+            <img src="../../assets/icons/delete-icon.svg" alt="" srcset="" />
           </button>
         </div>
 
@@ -46,19 +50,145 @@
         </div>
       </div>
     </div>
+
+    <!-- Add Card Modal -->
+    <BaseModal
+      v-model="showAddCard"
+      title="Add New Card"
+      size="sm"
+      @close="() => (showAddCard = false)"
+    >
+      <div class="p-1 space-y-5">
+        <div>
+          <label class="block text-sm text-gray-600 mb-1">Card Number</label>
+          <input
+            v-model="form.cardNumber"
+            type="text"
+            placeholder="1234 5678 9012 3456"
+            class="w-full border-b border-gray-300 focus:border-[#0B3C5D] focus:outline-none py-2 text-gray-800"
+          />
+        </div>
+        <div class="flex gap-4">
+          <div class="flex-1">
+            <label class="block text-sm text-gray-600 mb-1"
+              >Expiry Date (MM/YY)</label
+            >
+            <input
+              v-model="form.expiry"
+              type="text"
+              placeholder="MM/YY"
+              class="w-full border-b border-gray-300 focus:border-[#0B3C5D] focus:outline-none py-2 text-gray-800"
+            />
+          </div>
+          <div class="w-1/2">
+            <label class="block text-sm text-gray-600 mb-1">CVV</label>
+            <input
+              v-model="form.cvv"
+              type="text"
+              placeholder="CVV"
+              class="w-full border-b border-gray-300 focus:border-[#0B3C5D] focus:outline-none py-2 text-gray-800"
+            />
+          </div>
+        </div>
+      </div>
+      <template #footer>
+        <div class="flex justify-end">
+          <button
+            class="px-6 py-2 rounded-md bg-green-500 text-white text-sm font-medium hover:bg-green-600"
+            @click="addCard"
+          >
+            Add Card
+          </button>
+        </div>
+      </template>
+    </BaseModal>
+
+    <!-- Add Card Success Modal -->
+    <BaseModal
+      v-model="showAddSuccess"
+      title="Success"
+      size="sm"
+      @close="() => (showAddSuccess = false)"
+    >
+      <div class="p-1 text-center">
+        <p class="text-base font-semibold text-[#0B3C5D] mb-1">
+          Card added successfully
+        </p>
+        <div class="flex justify-center">
+          <button
+            class="px-5 py-2 rounded-md bg-green-500 text-white text-sm font-medium hover:bg-green-600"
+            @click="showAddSuccess = false"
+          >
+            Done
+          </button>
+        </div>
+        <div
+          class="mx-auto mb-4 flex items-center justify-center h-16 w-16 rounded-full bg-green-100"
+        >
+          <img
+            src="../../assets/icons/success-icon.svg"
+            alt="Success"
+            class="h-8 w-8"
+          />
+        </div>
+      </div>
+    </BaseModal>
   </section>
 </template>
 
 <script setup>
-const cards = [
+import { ref } from "vue";
+import BaseModal from "@/components/BaseModal.vue";
+
+const showAddCard = ref(false);
+const form = ref({ cardNumber: "", expiry: "", cvv: "" });
+const cards = ref([
   {
-    last4: '3745',
-    holder: 'Joshua Bakare',
-    expiry: '03/22',
+    last4: "3745",
+    holder: "Joshua Bakare",
+    expiry: "03/22",
     brandLogo:
-      'https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png',
+      "https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png",
   },
-]
+]);
+const showAddSuccess = ref(false);
+
+function openAddCard() {
+  resetForm();
+  showAddCard.value = true;
+}
+
+function resetForm() {
+  form.value = { cardNumber: "", expiry: "", cvv: "" };
+}
+
+function detectBrand(num) {
+  // Very naive detection by first digit
+  if (/^4/.test(num))
+    return "https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg";
+  if (/^5[1-5]/.test(num))
+    return "https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png";
+  return "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Generic_credit_card_icon.svg/120px-Generic_credit_card_icon.svg.png";
+}
+
+function addCard() {
+  const raw = form.value.cardNumber.replace(/\s+/g, "");
+  if (raw.length < 12) return; // minimal length guard
+  const last4 = raw.slice(-4);
+  cards.value.push({
+    last4,
+    holder: "Joshua Bakare", // placeholder; in real app fetch user/store owner
+    expiry: form.value.expiry || "MM/YY",
+    brandLogo: detectBrand(raw),
+  });
+  showAddCard.value = false;
+  resetForm();
+  showAddSuccess.value = true;
+}
+
+function removeCard(index) {
+  cards.value.splice(index, 1);
+}
 </script>
 
 <style scoped>

@@ -171,7 +171,7 @@
     <!-- Reusable Modals -->
     <BaseModal
       v-model="showTopUp"
-      title="Top Up Wallet"
+      title=""
       @close="() => (showTopUp = false)"
     >
       <div class="p-6">

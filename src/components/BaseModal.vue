@@ -25,14 +25,14 @@
             @click.stop
           >
             <!-- Header -->
-            <div class="flex items-start justify-between px-4 py-3 border-b border-gray-200">
-              <div class="mr-4 min-w-0" v-if="hasHeaderSlot || title">
-                <h2 v-if="title" :id="titleId" class="text-base font-semibold text-gray-900 truncate">{{ title }}</h2>
+            <div class="relative px-4 py-3 border-b border-gray-200">
+              <div class="min-w-0 text-center" v-if="hasHeaderSlot || title">
+                <h2 v-if="title" :id="titleId" class="text-base font-semibold text-[#013C61]">{{ title }}</h2>
                 <slot v-if="hasHeaderSlot" name="header" />
               </div>
               <button
                 type="button"
-                class="ml-auto inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500"
+                class="absolute right-2 top-1/2 -translate-y-1/2 transform inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500"
                 @click="close('close-button')"
                 aria-label="Close"
               >

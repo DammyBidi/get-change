@@ -5,6 +5,7 @@
       <h2 class="text-2xl font-semibold text-gray-800">Employees</h2>
       <button
         class="bg-green-500 text-white px-5 py-2 rounded-md hover:bg-green-600 transition"
+        @click="showAddEmployee = true"
       >
         Add New
       </button>
@@ -89,22 +90,114 @@
         <div class="text-gray-600 text-sm truncate">{{ emp.email }}</div>
         <div class="text-gray-600 text-sm">{{ emp.phone }}</div>
         <div class="text-gray-700">{{ emp.role }}</div>
-        <div class="text-gray-400 hover:text-red-500 cursor-pointer">
-          <i class="fas fa-trash"></i>
+        <div class="text-gray-400 hover:text-red-500 cursor-pointer" @click="confirmDelete(emp, index)">
+          <img src="../../assets/icons/delete-icon.svg" alt="delete-icon" srcset="">
         </div>
       </div>
     </div>
   </section>
+
+  <!-- Add Employee Modal -->
+  <BaseModal
+    v-model="showAddEmployee"
+    title="Add a new member of your team"
+    size="lg"
+    @close="() => (showAddEmployee = false)"
+  >
+    <div class="p-1 space-y-5">
+      <div>
+        <label class="block text-sm text-gray-600 mb-1">Email</label>
+        <input
+          v-model="newInviteEmail"
+          type="email"
+          placeholder="e.g. jane.doe@company.com"
+          class="w-full border-b border-gray-300 focus:border-[#0B3C5D] focus:outline-none py-2 text-gray-800"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm text-gray-600 mb-1">Phone Number</label>
+        <input
+          v-model="newInvitePhone"
+          type="tel"
+          placeholder="e.g. 08012345678"
+          class="w-full border-b border-gray-300 focus:border-[#0B3C5D] focus:outline-none py-2 text-gray-800"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm text-gray-600 mb-1">Assign Role</label>
+        <select
+          v-model="newInviteRole"
+          class="w-full border-b border-gray-300 focus:border-[#0B3C5D] focus:outline-none py-2 text-gray-800"
+        >
+          <option value="">Select a role</option>
+          <option value="Admin">Admin</option>
+          <option value="Staff">Staff</option>
+        </select>
+      </div>
+    </div>
+
+    <template #footer>
+      <div class="flex justify-end">
+        <button
+          class="px-6 py-2 rounded-md bg-green-500 text-white text-sm font-medium hover:bg-green-600"
+          @click="sendInvite"
+        >
+          Send invite
+        </button>
+      </div>
+    </template>
+  </BaseModal>
+
+  <!-- Delete Employee Confirm Modal -->
+  <BaseModal
+    v-model="showDeleteConfirm"
+    title="Delete Employee"
+    size="sm"
+    @close="() => (showDeleteConfirm = false)"
+  >
+    <div class="p-1">
+      <p class="text-gray-700 text-sm mb-6 text-center">
+        Are you sure you want to delete
+        <span class="font-semibold text-[#013C61]">{{ deleteName }}</span>?
+      </p>
+      <div class="flex justify-center gap-3">
+        <button
+          class="px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm hover:bg-gray-200"
+          @click="cancelDelete"
+        >
+          No, Cancel
+        </button>
+        <button
+          class="px-4 py-2 rounded-md bg-green-500 text-white text-sm hover:bg-green-600"
+          @click="performDelete"
+        >
+          Yes, Delete
+        </button>
+      </div>
+    </div>
+  </BaseModal>
 </template>
 
 <script>
+import BaseModal from "@/components/BaseModal.vue";
+
 export default {
   name: 'Employees',
+  components: { BaseModal },
   data() {
     return {
       searchQuery: '',
       selectedRole: '',
       selectAll: false,
+      showAddEmployee: false,
+      newInviteEmail: '',
+      newInvitePhone: '',
+      newInviteRole: '',
+      showDeleteConfirm: false,
+      deleteIndex: null,
+      deleteName: '',
       employees: [
         { firstName: 'Joshua', lastName: 'Bakare', email: 'josh.bakery@gmail.com', phone: '+2348012345678', role: 'Admin', selected: false },
         { firstName: 'Jane', lastName: 'Clement', email: 'josh.bakery@gmail.com', phone: '+2348012345678', role: 'Staff', selected: false },
@@ -138,6 +231,29 @@ export default {
       })
       this.selectedRole = ''
       this.selectAll = false
+    },
+    sendInvite() {
+      // Placeholder: in real app, call API to send invite
+      this.showAddEmployee = false
+      this.newInviteEmail = ''
+      this.newInvitePhone = ''
+      this.newInviteRole = ''
+    },
+    confirmDelete(emp, index) {
+      this.deleteIndex = index
+      this.deleteName = emp.firstName
+      this.showDeleteConfirm = true
+    },
+    cancelDelete() {
+      this.showDeleteConfirm = false
+      this.deleteIndex = null
+      this.deleteName = ''
+    },
+    performDelete() {
+      if (this.deleteIndex !== null) {
+        this.employees.splice(this.deleteIndex, 1)
+      }
+      this.cancelDelete()
     },
   },
 }

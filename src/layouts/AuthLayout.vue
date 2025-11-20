@@ -5,7 +5,7 @@
     <aside class="hidden relative md:flex">
       <!-- Background image -->
       <img
-        src="/src/assets/images/Bitmap.png"
+        :src="images[currentImageIndex]"
         alt="Smiling shop owner"
         class="absolute inset-0 h-full w-full object-cover"
       />
@@ -24,8 +24,12 @@
 
         <!-- Pagination dots -->
         <div class="mt-6 flex items-center space-x-2">
-            <span class="h-2 w-2 rounded-full bg-white"></span>
-            <span class="h-2 w-2 rounded-full bg-white/40"></span>
+          <span
+            v-for="(img, i) in images"
+            :key="i"
+            class="h-2 w-2 rounded-full"
+            :class="i === currentImageIndex ? 'bg-[#2BDA53]' : 'bg-white/40'"
+          ></span>
         </div>
     </div>
     </aside>
@@ -52,8 +56,27 @@
 </template>
 
 <script>
+import Bitmap from "../assets/images/Bitmap.png";
+import Bitmap2 from "../assets/images/Bitmap2.png";
+
 export default {
   name: "AuthLayout",
+  data() {
+    return {
+      images: [Bitmap, Bitmap2],
+      currentImageIndex: 0,
+      _intervalId: null,
+      intervalMs: 5000,
+    };
+  },
+  mounted() {
+    this._intervalId = setInterval(() => {
+      this.currentImageIndex = (this.currentImageIndex + 1) % this.images.length;
+    }, this.intervalMs);
+  },
+  beforeUnmount() {
+    if (this._intervalId) clearInterval(this._intervalId);
+  },
 };
 </script>
 
