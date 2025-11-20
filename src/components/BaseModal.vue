@@ -30,14 +30,15 @@
                 <h2 v-if="title" :id="titleId" class="text-base font-semibold text-[#013C61]">{{ title }}</h2>
                 <slot v-if="hasHeaderSlot" name="header" />
               </div>
-              <button
+              <BaseButton
                 type="button"
-                class="absolute right-2 top-1/2 -translate-y-1/2 transform inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500"
+                variant="icon"
+                class="absolute right-2 top-1/2 -translate-y-1/2 transform p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:ring-green-500"
                 @click="close('close-button')"
                 aria-label="Close"
               >
                 <span class="text-lg leading-none">×</span>
-              </button>
+              </BaseButton>
             </div>
 
             <!-- Body -->
@@ -57,10 +58,10 @@
 </template>
 
 <script>
-
-
+import BaseButton from '@/components/BaseButton.vue'
 export default {
   name: 'BaseModal',
+  components: { BaseButton },
   props: {
     modelValue: { type: Boolean, default: false },
     title: { type: String, default: '' },

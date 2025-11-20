@@ -64,12 +64,7 @@
         </label>
 
         <div class="mt-4 flex justify-end">
-          <button
-            type="submit"
-            class="inline-flex items-center rounded-lg bg-green-500 px-4 py-2 text-white font-medium hover:bg-green-600"
-          >
-            Continue
-          </button>
+          <BaseButton type="submit" variant="primary" size="md">Continue</BaseButton>
         </div>
       </form>
     </div>
@@ -77,8 +72,10 @@
 </template>
 
 <script>
+import BaseButton from '@/components/BaseButton.vue'
 export default {
   name: "StepOne",
+  components: { BaseButton },
   data() {
     return {
       form: {

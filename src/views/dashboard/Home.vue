@@ -11,12 +11,7 @@
           <p class="text-[#013C61] text-lg font-medium">Store Wallet</p>
           <h2 class="text-3xl font-bold text-[#013C61] mt-1">₦2,500</h2>
 
-          <button
-            class="bg-green-500 hover:bg-green-600 text-white font-medium px-5 py-2 rounded-md"
-            @click="showTopUp = true"
-          >
-            Top up wallet
-          </button>
+          <BaseButton variant="primary" size="md" @click="showTopUp = true">Top up wallet</BaseButton>
         </div>
 
         <!-- Total Disbursed -->
@@ -26,12 +21,7 @@
           <p class="text-[#013C61] text-lg font-medium">Total Disbursed</p>
           <h2 class="text-3xl font-bold text-[#013C61] mt-1">₦12,000</h2>
 
-          <button
-            class="border border-gray-300 hover:bg-gray-50 text-gray-800 font-medium px-5 py-2 rounded-md"
-            @click="showHistory = true"
-          >
-            View History
-          </button>
+          <BaseButton variant="outline" size="md" @click="showHistory = true">View History</BaseButton>
         </div>
       </div>
 
@@ -123,48 +113,44 @@
       <!-- Keypad -->
       <div class="bg-white p-4">
         <div class="bg-[#2BDA5333] grid grid-cols-4 gap-2 mb-4">
-          <button
+          <BaseButton
             v-for="key in keypadRow1"
             :key="key"
+            variant="ghost"
+            size="sm"
             class="bg-transparent text-gray-800 font-semibold py-3 rounded-md hover:bg-green-100"
           >
             {{ key }}
-          </button>
+          </BaseButton>
         </div>
         <div class="grid grid-cols-4 gap-2 mb-4">
-          <button
+          <BaseButton
             v-for="key in keypadRow2"
             :key="key"
+            variant="ghost"
+            size="sm"
             class="bg-transparent text-gray-800 font-semibold py-3 rounded-md hover:bg-green-100"
           >
             {{ key }}
-          </button>
+          </BaseButton>
         </div>
         <div class="grid grid-cols-4 gap-2">
-          <button
+          <BaseButton
             v-for="key in keypadRow3"
             :key="key"
+            variant="ghost"
+            size="sm"
             class="bg-transparent text-gray-800 font-semibold py-3 rounded-md hover:bg-green-100"
           >
             {{ key }}
-          </button>
+          </BaseButton>
         </div>
       </div>
 
       <!-- Bottom Buttons -->
       <div class="bg-white p-4 flex flex-col gap-3">
-        <button
-          class="border border-gray-300 text-gray-800 py-2 rounded-md font-medium hover:bg-gray-50"
-          @click="showQuery = true"
-        >
-          Query
-        </button>
-        <button
-          class="bg-green-500 hover:bg-green-600 text-white py-2 rounded-md font-medium"
-          @click="openIouModal"
-        >
-          Generate
-        </button>
+        <BaseButton variant="outline" size="md" @click="showQuery = true">Query</BaseButton>
+        <BaseButton variant="primary" size="md" @click="openIouModal">Generate</BaseButton>
       </div>
     </div>
 
@@ -232,11 +218,7 @@
             Use saved debit card
           </label>
 
-          <button
-            class="bg-[#00E676] hover:bg-[#00c964] text-white font-medium px-6 py-2 rounded-md transition-colors"
-          >
-            Credit Wallet
-          </button>
+          <BaseButton variant="primary" size="md" class="bg-[#00E676] hover:bg-[#00c964] text-white font-medium px-6 py-2 rounded-md transition-colors">Credit Wallet</BaseButton>
         </div>
       </div>
     </BaseModal>
@@ -258,12 +240,7 @@
       </div>
       <template #footer>
         <div class="flex justify-end">
-          <button
-            class="px-4 py-2 text-sm rounded-md bg-green-500 text-white hover:bg-green-600"
-            @click="showHistory = false"
-          >
-            Close
-          </button>
+          <BaseButton variant="primary" size="sm" @click="showHistory = false">Close</BaseButton>
         </div>
       </template>
     </BaseModal>
@@ -364,18 +341,8 @@
         </div>
         <p v-if="iouError" class="text-red-600 text-sm mb-4">{{ iouError }}</p>
         <div class="flex justify-center gap-4">
-          <button
-            class="px-4 py-2 rounded-md bg-green-500 text-white text-sm font-medium hover:bg-green-600"
-            @click="validateIou"
-          >
-            Validate
-          </button>
-          <button
-            class="px-4 py-2 rounded-md bg-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-300"
-            @click="showIouValidate = false"
-          >
-            Cancel
-          </button>
+          <BaseButton variant="primary" size="sm" @click="validateIou">Validate</BaseButton>
+          <BaseButton variant="secondary" size="sm" @click="showIouValidate = false">Cancel</BaseButton>
         </div>
       </div>
     </BaseModal>
@@ -416,10 +383,11 @@
 
 <script>
 import BaseModal from "@/components/BaseModal.vue";
+import BaseButton from "@/components/BaseButton.vue";
 
 export default {
   name: "HomeView",
-  components: { BaseModal },
+  components: { BaseModal, BaseButton },
   data() {
     return {
       activities: [

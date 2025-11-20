@@ -3,12 +3,9 @@
     <!-- Header Row -->
     <div class="flex items-center justify-between">
       <h2 class="text-xl font-semibold text-gray-800">Debit Cards</h2>
-      <button
-        class="bg-green-500 text-white px-5 py-2 rounded-md hover:bg-green-600 transition"
-        @click="openAddCard"
+      <BaseButton variant="primary" size="md" @click="openAddCard"
+        >Add New</BaseButton
       >
-        Add New
-      </button>
     </div>
 
     <!-- Card List -->
@@ -24,12 +21,13 @@
           <p class="text-gray-800 text-lg tracking-widest font-semibold">
             **** **** **** {{ card.last4 }}
           </p>
-          <button
-            class="text-gray-400 hover:text-red-500 transition"
+          <BaseButton
+            variant="icon"
+            class="text-gray-400 hover:text-red-500"
             @click="removeCard(index)"
           >
-            <img src="../../assets/icons/delete-icon.svg" alt="" srcset="" />
-          </button>
+            <img src="../../assets/icons/delete-icon.svg" alt="" />
+          </BaseButton>
         </div>
 
         <!-- Card Footer -->
@@ -93,12 +91,9 @@
       </div>
       <template #footer>
         <div class="flex justify-end">
-          <button
-            class="px-6 py-2 rounded-md bg-green-500 text-white text-sm font-medium hover:bg-green-600"
-            @click="addCard"
+          <BaseButton variant="primary" size="sm" @click="addCard"
+            >Add Card</BaseButton
           >
-            Add Card
-          </button>
         </div>
       </template>
     </BaseModal>
@@ -114,14 +109,7 @@
         <p class="text-base font-semibold text-[#0B3C5D] mb-1">
           Card added successfully
         </p>
-        <div class="flex justify-center">
-          <button
-            class="px-5 py-2 rounded-md bg-green-500 text-white text-sm font-medium hover:bg-green-600"
-            @click="showAddSuccess = false"
-          >
-            Done
-          </button>
-        </div>
+
         <div
           class="mx-auto mb-4 flex items-center justify-center h-16 w-16 rounded-full bg-green-100"
         >
@@ -131,64 +119,76 @@
             class="h-8 w-8"
           />
         </div>
+        <div class="flex justify-center">
+          <BaseButton
+            variant="primary"
+            size="sm"
+            @click="showAddSuccess = false"
+            >Done</BaseButton
+          >
+        </div>
       </div>
     </BaseModal>
   </section>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script>
 import BaseModal from "@/components/BaseModal.vue";
+import BaseButton from "@/components/BaseButton.vue";
 
-const showAddCard = ref(false);
-const form = ref({ cardNumber: "", expiry: "", cvv: "" });
-const cards = ref([
-  {
-    last4: "3745",
-    holder: "Joshua Bakare",
-    expiry: "03/22",
-    brandLogo:
-      "https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png",
+export default {
+  name: "CardsView",
+  components: { BaseModal, BaseButton },
+  data() {
+    return {
+      showAddCard: false,
+      form: { cardNumber: "", expiry: "", cvv: "" },
+      cards: [
+        {
+          last4: "3745",
+          holder: "Joshua Bakare",
+          expiry: "03/22",
+          brandLogo:
+            "https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png",
+        },
+      ],
+      showAddSuccess: false,
+    };
   },
-]);
-const showAddSuccess = ref(false);
-
-function openAddCard() {
-  resetForm();
-  showAddCard.value = true;
-}
-
-function resetForm() {
-  form.value = { cardNumber: "", expiry: "", cvv: "" };
-}
-
-function detectBrand(num) {
-  // Very naive detection by first digit
-  if (/^4/.test(num))
-    return "https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg";
-  if (/^5[1-5]/.test(num))
-    return "https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png";
-  return "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Generic_credit_card_icon.svg/120px-Generic_credit_card_icon.svg.png";
-}
-
-function addCard() {
-  const raw = form.value.cardNumber.replace(/\s+/g, "");
-  if (raw.length < 12) return; // minimal length guard
-  const last4 = raw.slice(-4);
-  cards.value.push({
-    last4,
-    holder: "Joshua Bakare", // placeholder; in real app fetch user/store owner
-    expiry: form.value.expiry || "MM/YY",
-    brandLogo: detectBrand(raw),
-  });
-  showAddCard.value = false;
-  resetForm();
-  showAddSuccess.value = true;
-}
-
-function removeCard(index) {
-  cards.value.splice(index, 1);
-}
+  methods: {
+    openAddCard() {
+      this.resetForm();
+      this.showAddCard = true;
+    },
+    resetForm() {
+      this.form = { cardNumber: "", expiry: "", cvv: "" };
+    },
+    detectBrand(num) {
+      if (/^4/.test(num))
+        return "https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg";
+      if (/^5[1-5]/.test(num))
+        return "https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png";
+      return "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Generic_credit_card_icon.svg/120px-Generic_credit_card_icon.svg.png";
+    },
+    addCard() {
+      const raw = this.form.cardNumber.replace(/\s+/g, "");
+      if (raw.length < 12) return; // minimal length guard
+      const last4 = raw.slice(-4);
+      this.cards.push({
+        last4,
+        holder: "Joshua Bakare", // placeholder; in real app fetch user/store owner
+        expiry: this.form.expiry || "MM/YY",
+        brandLogo: this.detectBrand(raw),
+      });
+      this.showAddCard = false;
+      this.resetForm();
+      this.showAddSuccess = true;
+    },
+    removeCard(index) {
+      this.cards.splice(index, 1);
+    },
+  },
+};
 </script>
 
 <style scoped>

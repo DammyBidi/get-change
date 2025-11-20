@@ -112,12 +112,7 @@
           <router-link class="text-sky-600 hover:text-sky-700" to="/stepone"
             >Back</router-link
           >
-          <button
-            class="inline-flex items-center justify-center rounded-lg bg-green-500 px-4 py-2 text-white hover:bg-green-600"
-            type="submit"
-          >
-            Continue
-          </button>
+          <BaseButton type="submit" variant="primary" size="md">Continue</BaseButton>
         </div>
       </form>
     </div>
@@ -125,8 +120,10 @@
 </template>
 
 <script>
+import BaseButton from '@/components/BaseButton.vue'
 export default {
   name: "StepTwo",
+  components: { BaseButton },
   data() {
     return {
       form: {

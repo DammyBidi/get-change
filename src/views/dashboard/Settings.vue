@@ -71,12 +71,9 @@
 
         <!-- Save Button -->
         <div class="mt-10 flex justify-end">
-          <button
-            @click="saveChanges"
-            class="bg-green-500 hover:bg-green-600 text-white font-medium px-6 py-2.5 rounded transition"
+          <BaseButton variant="primary" size="md" @click="saveChanges"
+            >Save Changes</BaseButton
           >
-            Save Changes
-          </button>
           <p v-if="saved" class="text-sm text-green-600 mt-2">
             Changes saved successfully.
           </p>
@@ -141,13 +138,15 @@
 
           <!-- Update Button -->
           <div class="pt-2 flex items-center justify-end gap-4">
-            <button
-              @click="updatePassword"
+            <BaseButton
+              variant="primary"
+              size="md"
+              :loading="passwordLoading"
               :disabled="passwordLoading"
-              class="bg-green-500 disabled:opacity-60 disabled:cursor-not-allowed hover:bg-green-600 text-white font-medium px-6 py-2.5 rounded transition"
+              @click="updatePassword"
             >
               {{ passwordLoading ? "Saving…" : "Save Changes" }}
-            </button>
+            </BaseButton>
           </div>
 
           <p v-if="passwordSaved" class="text-sm text-green-600">
@@ -211,13 +210,15 @@
 
           <!-- Save Button -->
           <div class="pt-2 flex items-center justify-end gap-4">
-            <button
-              @click="saveStoreInfo"
+            <BaseButton
+              variant="primary"
+              size="md"
+              :loading="storeLoading"
               :disabled="storeLoading"
-              class="bg-green-500 disabled:opacity-60 disabled:cursor-not-allowed hover:bg-green-600 text-white font-medium px-6 py-2.5 rounded transition"
+              @click="saveStoreInfo"
             >
               {{ storeLoading ? "Saving…" : "Save Changes" }}
-            </button>
+            </BaseButton>
           </div>
 
           <p v-if="storeSaved" class="text-sm text-green-600">
@@ -303,12 +304,9 @@
 
           <!-- Save Changes Button -->
           <div class="flex justify-end pt-4">
-            <button
-              @click="saveBillingInfo"
-              class="bg-green-500 hover:bg-green-600 text-white font-medium px-8 py-3 rounded transition"
+            <BaseButton variant="primary" size="lg" @click="saveBillingInfo"
+              >Save Changes</BaseButton
             >
-              Save Changes
-            </button>
           </div>
 
           <p
@@ -336,21 +334,25 @@
               <div class="text-gray-400">of {{ totalPages }}</div>
 
               <!-- prev/next circular controls -->
-              <button
+              <BaseButton
+                variant="outline"
+                size="xs"
                 @click="prevPage"
                 :disabled="currentPage === 1"
                 class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
               >
                 <span class="text-green-600 select-none">‹</span>
-              </button>
+              </BaseButton>
 
-              <button
+              <BaseButton
+                variant="outline"
+                size="xs"
                 @click="nextPage"
                 :disabled="currentPage === totalPages"
                 class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
               >
                 <span class="text-green-600 select-none">›</span>
-              </button>
+              </BaseButton>
             </div>
           </div>
 
@@ -387,8 +389,10 @@
 </template>
 
 <script>
+import BaseButton from "@/components/BaseButton.vue";
 export default {
   name: "Settings",
+  components: { BaseButton },
   data() {
     return {
       tabs: [
@@ -536,7 +540,8 @@ export default {
           "Password must be at least 8 characters.";
       }
       if (!this.passwordForm.confirmPassword) {
-        this.passwordErrors.confirmPassword = "Please confirm your new password.";
+        this.passwordErrors.confirmPassword =
+          "Please confirm your new password.";
       } else if (
         this.passwordForm.newPassword !== this.passwordForm.confirmPassword
       ) {

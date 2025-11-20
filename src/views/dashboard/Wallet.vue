@@ -11,8 +11,8 @@
           <!-- Pagination -->
       <div class="flex items-center text-sm text-gray-600 gap-2 self-end md:self-auto">
         <span>{{ currentPage }} of {{ totalPages }}</span>
-        <button class="p-1 hover:text-blue-500" @click="prevPage">&lt;</button>
-        <button class="p-1 hover:text-blue-500" @click="nextPage">&gt;</button>
+        <BaseButton variant="ghost" size="xs" class="p-1 hover:text-blue-500" @click="prevPage">&lt;</BaseButton>
+        <BaseButton variant="ghost" size="xs" class="p-1 hover:text-blue-500" @click="nextPage">&gt;</BaseButton>
       </div>
       </div>
 
@@ -56,8 +56,10 @@
  </template>
 
 <script>
+import BaseButton from '@/components/BaseButton.vue'
 export default {
   name: 'Wallet',
+  components: { BaseButton },
   data() {
     return {
       transactions: [

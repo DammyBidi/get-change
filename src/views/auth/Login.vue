@@ -45,12 +45,7 @@
             Forgot password?
           </router-link>
           <div class=" flex justify-end">
-            <button
-              type="submit"
-              class="inline-flex items-center rounded-lg bg-green-500 px-12 py-2 text-white font-medium hover:bg-green-600"
-            >
-              Sign in
-            </button>
+            <BaseButton type="submit" variant="primary" size="md" class="px-12">Sign in</BaseButton>
           </div>
         </div>
       </form>
@@ -59,8 +54,10 @@
 </template>
 
 <script>
+import BaseButton from '@/components/BaseButton.vue'
 export default {
   name: "Login",
+  components: { BaseButton },
   data() {
     return {
       form: {

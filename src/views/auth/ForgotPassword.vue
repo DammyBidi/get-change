@@ -36,22 +36,10 @@
            Back to login
           </router-link>
           <div class="mt-2 flex justify-end">
-            <button
-              type="submit"
-              class="inline-flex items-center rounded-lg bg-green-500 px-4 py-2 text-white font-medium hover:bg-green-600"
-            >
-              Recover
-            </button>
+            <BaseButton type="submit" variant="primary" size="md">Recover</BaseButton>
           </div>
         </div>
-        <!-- <div class="mt-2 flex justify-end">
-          <button
-            type="submit"
-            class="inline-flex items-center rounded-lg bg-green-500 px-4 py-2 text-white font-medium hover:bg-green-600"
-          >
-            Recover
-          </button>
-        </div> -->
+        
       </form>
 
       <p v-if="sent" class="mt-4 text-sm text-emerald-700">
@@ -63,8 +51,10 @@
 </template>
 
 <script>
+import BaseButton from '@/components/BaseButton.vue'
 export default {
   name: "ForgotPassword",
+  components: { BaseButton },
   data() {
     return {
       email: "",

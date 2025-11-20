@@ -3,12 +3,7 @@
     <!-- Top Header Row -->
     <div class="flex items-center justify-between">
       <h2 class="text-2xl font-semibold text-gray-800">Employees</h2>
-      <button
-        class="bg-green-500 text-white px-5 py-2 rounded-md hover:bg-green-600 transition"
-        @click="showAddEmployee = true"
-      >
-        Add New
-      </button>
+      <BaseButton variant="primary" size="md" @click="showAddEmployee = true">Add New</BaseButton>
     </div>
 
     <!-- Business Info Card -->
@@ -34,12 +29,7 @@
           <option value="Admin">Admin</option>
           <option value="Staff">Staff</option>
         </select>
-        <button
-          class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
-          @click="changeRole"
-        >
-          Change
-        </button>
+        <BaseButton variant="primary" size="sm" @click="changeRole">Change</BaseButton>
         <div class="relative">
           <input
             type="text"
@@ -56,8 +46,8 @@
       <!-- Pagination -->
       <div class="flex items-center text-sm text-gray-600 gap-2 self-end md:self-auto">
         <span>1 of 2</span>
-        <button class="p-1 hover:text-blue-500">&lt;</button>
-        <button class="p-1 hover:text-blue-500">&gt;</button>
+        <BaseButton variant="ghost" size="xs" class="p-1 hover:text-blue-500">&lt;</BaseButton>
+        <BaseButton variant="ghost" size="xs" class="p-1 hover:text-blue-500">&gt;</BaseButton>
       </div>
     </div>
 
@@ -91,7 +81,9 @@
         <div class="text-gray-600 text-sm">{{ emp.phone }}</div>
         <div class="text-gray-700">{{ emp.role }}</div>
         <div class="text-gray-400 hover:text-red-500 cursor-pointer" @click="confirmDelete(emp, index)">
-          <img src="../../assets/icons/delete-icon.svg" alt="delete-icon" srcset="">
+          <BaseButton variant="icon" class="text-gray-400 hover:text-red-500">
+            <img src="../../assets/icons/delete-icon.svg" alt="delete-icon">
+          </BaseButton>
         </div>
       </div>
     </div>
@@ -140,12 +132,7 @@
 
     <template #footer>
       <div class="flex justify-end">
-        <button
-          class="px-6 py-2 rounded-md bg-green-500 text-white text-sm font-medium hover:bg-green-600"
-          @click="sendInvite"
-        >
-          Send invite
-        </button>
+        <BaseButton variant="primary" size="sm" @click="sendInvite">Send invite</BaseButton>
       </div>
     </template>
   </BaseModal>
@@ -163,18 +150,8 @@
         <span class="font-semibold text-[#013C61]">{{ deleteName }}</span>?
       </p>
       <div class="flex justify-center gap-3">
-        <button
-          class="px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm hover:bg-gray-200"
-          @click="cancelDelete"
-        >
-          No, Cancel
-        </button>
-        <button
-          class="px-4 py-2 rounded-md bg-green-500 text-white text-sm hover:bg-green-600"
-          @click="performDelete"
-        >
-          Yes, Delete
-        </button>
+        <BaseButton variant="outline" size="sm" @click="cancelDelete">No, Cancel</BaseButton>
+        <BaseButton variant="danger" size="sm" @click="performDelete">Yes, Delete</BaseButton>
       </div>
     </div>
   </BaseModal>
@@ -182,10 +159,11 @@
 
 <script>
 import BaseModal from "@/components/BaseModal.vue";
+import BaseButton from "@/components/BaseButton.vue";
 
 export default {
   name: 'Employees',
-  components: { BaseModal },
+  components: { BaseModal, BaseButton },
   data() {
     return {
       searchQuery: '',
